@@ -1,0 +1,264 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#5B2A86">
+<title>Açaí da Praça — Cardápio Digital | Demo SaaS</title>
+<link rel="manifest" href="manifest.webmanifest">
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🍧</text></svg>">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link id="fontLink" href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="styles.css">
+</head>
+<body>
+<div id="toastWrap"></div>
+<header class="topbar">
+  <div class="wrap topbar-in">
+    <a class="brand" href="#topo">🍧 <b>Menuly</b><span>SaaS de Cardápio</span></a>
+    <nav class="topnav">
+      <a href="#cardapio">Cardápio</a>
+      <a href="#checkout">Checkout</a>
+      <a href="#pedido">Pedido</a>
+      <a href="#painel">Painel</a>
+      <a href="#dash">Dashboard</a>
+      <a href="#tema">Tema</a>
+      <a href="#codigo">Código</a>
+    </nav>
+    <div class="top-actions">
+      <span id="openBadge" class="pill">…</span>
+      <button class="btn primary sm" onclick="document.getElementById('cardapio').scrollIntoView({behavior:'smooth'})">Pedir agora</button>
+    </div>
+  </div>
+  <div id="noticeBar" class="notice">🎉 Cupom <b>BEMVINDO10</b> com 10% OFF no primeiro pedido acima de R$ 20,00!</div>
+</header>
+
+<main id="topo">
+<!-- HERO -->
+<section class="hero wrap">
+  <div class="hero-txt">
+    <div class="kicker">LARAVEL + FILAMENT • SPEC 100% EXECUTÁVEL • PT-BR</div>
+    <h1>Mostrando do que sou capaz: <span class="grad">um delivery completo</span> funcionando no navegador.</h1>
+    <p>Esta página é uma <b>vitrine funcional</b> do SaaS da SPEC: cardápio mobile-first, sacola em Alpine-style, checkout com <b>PricingService real em JS</b> (centavos, sem float), Pix copia-e-cola com <b>CRC16</b>, Kanban da cozinha com <b>alerta sonoro</b>, dashboard, temas e isolamento multi-loja.</p>
+    <div class="hero-cta">
+      <a class="btn primary" href="#cardapio">🛒 Ver cardápio demo</a>
+      <a class="btn ghost" href="#painel">📦 Abrir painel da loja</a>
+      <a class="btn ghost" href="#codigo">⚙️ Ver engenharia</a>
+    </div>
+    <div class="hero-meta">
+      <div><b>14,00 → 1400</b><span>dinheiro em centavos</span></div>
+      <div><b>5s polling</b><span>sem websocket</span></div>
+      <div><b>7 presets</b><span>temas + PWA</span></div>
+      <div><b>0 vazamento</b><span>store_id em tudo</span></div>
+    </div>
+  </div>
+  <div class="hero-phone">
+    <div class="phone">
+      <div class="phone-notch"></div>
+      <div class="store-cover"></div>
+      <div class="store-head">
+        <div class="store-logo">🍧</div>
+        <div><b>Açaí da Praça</b><small id="heroStatus">Aberto • 30–50 min</small></div>
+        <button class="btn primary sm" onclick="scrollToId('cardapio')">Abrir</button>
+      </div>
+      <div class="mini-chips"><span>Monte seu açaí</span><span>Açaís prontos</span><span>Bebidas</span></div>
+      <div class="mini-card"><div><b>Monte seu açaí</b><small>a partir de R$ 14,00</small></div><div class="mini-img">🍨</div></div>
+      <div class="mini-card"><div><b>Açaí Nutella 500ml</b><small><s>R$ 24,00</s> R$ 22,00</small></div><div class="mini-img">🍫</div></div>
+      <div class="cartbar-mini">Ver sacola • <span id="heroCartCount">0</span> itens • <span id="heroCartTotal">R$ 0,00</span></div>
+    </div>
+  </div>
+</section>
+
+<!-- LOJA INFO -->
+<section class="wrap storeinfo">
+  <div class="info-card">
+    <div>⏱️ <b id="prepInfo">30–50 min</b><small>preparo</small></div>
+    <div>🛵 <b id="feeInfo">a partir de R$ 5,00</b><small>entrega</small></div>
+    <div>⭐ <b>4,9 <small>(127 avaliações)</small></b><small>nota média</small></div>
+    <div>📍 <b>Centro</b><small>4 zonas ativas</small></div>
+    <div class="info-btns">
+      <button class="btn ghost sm" onclick="shareStore()">📤 Compartilhar</button>
+      <a class="btn ghost sm" href="https://wa.me/5511999999999?text=Ol%C3%A1%2C%20A%C3%A7a%C3%AD%20da%20Pra%C3%A7a!" target="_blank">💬 WhatsApp</a>
+    </div>
+  </div>
+</section>
+
+<!-- CARDÁPIO -->
+<section id="cardapio" class="wrap">
+  <div class="sec-head"><h2>📋 Cardápio — Açaí da Praça</h2><p>Busca, categorias sticky, sheet de produto e sacola persistida (<code>cart:acai-da-praca</code>).</p></div>
+  <div class="catbar" id="catBar">
+    <button class="chip active" data-cat="all">✨ Destaques</button>
+    <button class="chip" data-cat="monte">Monte seu açaí</button>
+    <button class="chip" data-cat="prontos">Açaís prontos</button>
+    <button class="chip" data-cat="cremes">Cremes e shakes</button>
+    <button class="chip" data-cat="bebidas">Bebidas</button>
+    <button class="chip" data-cat="adicionais">Adicionais</button>
+    <div class="searchbox"><input id="search" placeholder="🔎 Buscar… (ex: nutella)" oninput="renderMenu()"></div>
+  </div>
+  <h3 class="sub">✨ Destaques</h3>
+  <div class="carousel" id="featuredRow"></div>
+  <div id="menuSections"></div>
+</section>
+
+<!-- CHECKOUT -->
+<section id="checkout" class="wrap two">
+  <div>
+    <div class="sec-head"><h2>🧾 Checkout</h2><p>Recalculado no servidor (aqui, em JS fiel à SPEC §6.2). Preço do cliente é ignorado.</p></div>
+    <form id="checkoutForm" class="card form" onsubmit="return placeOrder(event)">
+      <div class="grid2">
+        <label>Nome*<input required id="fName" placeholder="Seu nome" autocomplete="name"></label>
+        <label>WhatsApp*<input required id="fPhone" placeholder="(11) 99999-9999" inputmode="tel"></label>
+      </div>
+      <div class="types" id="orderTypes">
+        <button type="button" class="chip active" data-t="delivery">🛵 Entrega</button>
+        <button type="button" class="chip" data-t="pickup">🏃 Retirada</button>
+      </div>
+      <div class="grid2" id="addressFields">
+        <label>CEP<input id="fCep" placeholder="00000-000" inputmode="numeric" maxlength="9" oninput="viaCep(this)"><small id="cepHint"></small></label>
+        <label>Bairro (zona)*<select id="fZone"></select></label>
+        <label>Rua<input id="fStreet" placeholder="Rua, Av…"></label>
+        <label>Número<input id="fNumber" placeholder="123"></label>
+        <label>Complemento<input id="fComp" placeholder="Apto, bloco…"></label>
+        <label>Cidade<input id="fCity" placeholder="Sua cidade"></label>
+      </div>
+      <label>Agendar para depois? <small>(mín. +30min, máx. 7 dias, loja aberta)</small><input type="datetime-local" id="fSched"></label>
+      <label>Pagamento*<select id="fPay"><option value="pix">⚡ Pix</option><option value="card_on_delivery">💳 Cartão na entrega</option><option value="cash">💵 Dinheiro</option></select></label>
+      <label id="trocoWrap" style="display:none">Troco para quanto?<input id="fChange" type="number" step="0.01" min="0" placeholder="Ex: 50.00"></label>
+      <div class="couponrow">
+        <input id="fCoupon" placeholder="Cupom (tente BEMVINDO10)">
+        <button type="button" class="btn ghost sm" onclick="applyCoupon()">Aplicar</button>
+      </div>
+      <label>Observações<input id="fNotes" placeholder="Ex: sem granola"></label>
+      <input id="fWebsite" style="display:none" placeholder="não preencha (honeypot)" autocomplete="off">
+      <div id="quoteBox" class="quote"></div>
+      <button class="btn primary big" id="orderBtn" type="submit">Fazer pedido • <span id="orderBtnTotal">R$ 0,00</span></button>
+    </form>
+  </div>
+  <div>
+    <div class="sec-head"><h2>🛍️ Sacola</h2><p>Alpine.store persistida + total visual (servidor recalcula).</p></div>
+    <div class="card" id="cartBox"></div>
+    <div class="card tiny">
+      <b>Regras aplicadas agora:</b>
+      <ul>
+        <li>Pedido mínimo da zona / loja (§6.2.7)</li>
+        <li>Cupom maiúsculo, validade, 1º pedido, limite de usos (§6.2.8)</li>
+        <li>Frete grátis acima do valor (§6.2.9)</li>
+        <li>Estoque e grupos min/max (§6.2.2–3)</li>
+      </ul>
+    </div>
+  </div>
+</section>
+
+<!-- TRACKING -->
+<section id="pedido" class="wrap">
+  <div class="sec-head"><h2>📍 Acompanhar pedido</h2><p>Polling 10s • Pix com QR + copia-e-cola • avaliação pós-entrega.</p></div>
+  <div class="two">
+    <div class="card" id="trackBox"><p class="muted">Faça um pedido no checkout para ver o acompanhamento aqui. Ou <button class="btn ghost sm" onclick="demoOrder()">usar pedido demo #42</button></p></div>
+    <div class="card" id="pixBox" style="display:none">
+      <h3>⚡ Pix — Açaí da Praça</h3>
+      <div class="pixgrid">
+        <div id="qrSvg"></div>
+        <div><code id="pixCode" class="pixcode"></code><br><br>
+        <button class="btn primary sm" onclick="copyPix()">📋 Copiar código</button>
+        <p class="muted">Chave: pix@acaidapraca.test • Payload TLV + CRC16 (§6.6)</p></div>
+      </div>
+      <div id="reviewBox"></div>
+    </div>
+  </div>
+</section>
+
+<!-- PAINEL -->
+<section id="painel" class="wrap">
+  <div class="sec-head"><h2>🍳 Painel da loja — quadro de pedidos</h2><p>Poll 5s • papéis (owner/manager/atendente/cozinha/entregador) • alerta sonoro Web Audio 880Hz • impressão 80/58mm.</p></div>
+  <div class="panel-toolbar card">
+    <button class="btn ghost sm" onclick="toggleSound()" id="soundBtn">🔕 Ativar alerta sonoro</button>
+    <button class="btn primary sm" onclick="manualOrder()">＋ Novo pedido manual</button>
+    <button class="btn ghost sm" onclick="simulateIncoming()">🔔 Simular pedido chegando</button>
+    <select id="roleSel" onchange="renderKanban()" title="Papel">
+      <option value="owner">Dono (tudo)</option><option value="kitchen">Cozinha (novo→pronto)</option><option value="delivery">Entregador (pronto→entregue)</option><option value="attendant">Atendente</option>
+    </select>
+  </div>
+  <div class="kanban" id="kanban"></div>
+</section>
+
+<!-- DASH -->
+<section id="dash" class="wrap">
+  <div class="sec-head"><h2>📊 Dashboard</h2><p>Agregado em PHP-style (collections) — funciona igual em SQLite e MySQL.</p></div>
+  <div class="stats" id="statsRow"></div>
+  <div class="two">
+    <div class="card"><h3>Vendas por dia (7 dias)</h3><canvas id="chSales" width="420" height="180"></canvas></div>
+    <div class="card"><h3>Pedidos por hora (30 dias)</h3><canvas id="chHours" width="420" height="180"></canvas></div>
+  </div>
+  <div class="card"><h3>🏆 Top 10 produtos (30 dias)</h3><div id="topTable"></div></div>
+</section>
+
+<!-- TEMA -->
+<section id="tema" class="wrap two">
+  <div>
+    <div class="sec-head"><h2>🎨 Aparência — preview ao vivo</h2><p>ThemeService::cssVars() + presets da SPEC §6.7. Troque e veja o cardápio mudar.</p></div>
+    <div class="card form">
+      <label>Preset<select id="tPreset" onchange="applyPreset(this.value)">
+        <option value="acai">Açaí #5B2A86</option><option value="burger">Burger #D62828</option><option value="pizza">Pizza #C0392B</option><option value="sushi">Sushi #111827</option><option value="doces">Doces #DB2777</option><option value="saudavel">Saudável #15803D</option><option value="dark">Dark #A78BFA</option>
+      </select></label>
+      <div class="grid2">
+        <label>Primária<input type="color" id="tPrimary" value="#5B2A86" oninput="applyTheme()"></label>
+        <label>Secundária<input type="color" id="tSecondary" value="#8E44AD" oninput="applyTheme()"></label>
+        <label>Destaque<input type="color" id="tAccent" value="#F4B400" oninput="applyTheme()"></label>
+        <label>Fundo<input type="color" id="tBg" value="#FAF7FD" oninput="applyTheme()"></label>
+      </div>
+      <div class="grid2">
+        <label>Fonte<select id="tFont" onchange="applyTheme()"><option>Poppins</option><option>Inter</option><option>Nunito</option><option>Montserrat</option><option>Playfair Display</option></select></label>
+        <label>Borda<select id="tRadius" onchange="applyTheme()"><option value="rounded">Arredondado 18px</option><option value="soft">Suave 10px</option><option value="square">Quadrado 4px</option></select></label>
+      </div>
+      <div class="grid2">
+        <label>Card<select id="tCard" onchange="applyTheme()"><option value="list">Lista</option><option value="grid">Grade</option></select></label>
+        <label>Modo<select id="tMode" onchange="applyTheme()"><option value="light">Claro</option><option value="dark">Escuro</option></select></label>
+      </div>
+      <code id="cssVarsOut" class="code"></code>
+    </div>
+  </div>
+  <div>
+    <div class="phone big">
+      <div class="phone-notch"></div>
+      <div class="store-cover"></div>
+      <div class="store-head"><div class="store-logo">🍧</div><div><b>Açaí da Praça</b><small>Preview ao vivo • 360px</small></div></div>
+      <div class="mini-chips"><span>Monte</span><span>Prontos</span><span>Bebidas</span></div>
+      <div class="mini-card"><div><b>Monte seu açaí</b><small>a partir de R$ 14,00</small><button class="btn primary sm">Adicionar</button></div><div class="mini-img">🍨</div></div>
+      <div class="cartbar-mini">Ver sacola • 2 itens • R$ 40,00</div>
+    </div>
+  </div>
+</section>
+
+<!-- CÓDIGO -->
+<section id="codigo" class="wrap">
+  <div class="sec-head"><h2>⚙️ Engenharia fiel à SPEC</h2><p>Clique em “executar” — cada bloco roda de verdade no navegador com os mesmos algoritmos do Laravel.</p></div>
+  <div class="codegrid" id="codeGrid"></div>
+  <div class="card">
+    <h3>🔒 Isolamento multi-loja (§12)</h3>
+    <p>Todo registro carrega <code>store_id</code>. Teste: logado na <b>loja A (id 1)</b>, tentar ler pedido da <b>loja B (id 2)</b>:</p>
+    <button class="btn ghost sm" onclick="testIsolation()">Executar teste de isolamento</button> <span id="isoOut"></span>
+  </div>
+</section>
+
+<section class="wrap cta">
+  <div class="card cta-in">
+    <div><h2>Quer a versão Laravel + Filament completa?</h2><p>A SPEC tem 16 seções e 10 etapas (E0→E10). Esta demo prova o front, as regras e o visual. O backend segue o mesmo contrato: centavos, store_id, PricingService, OrderService, Pix TLV+CRC16.</p></div>
+    <div class="hero-cta"><button class="btn primary" onclick="toast('Rota /admin/acai-da-praca — demo local 😉')">Abrir /admin/demo</button><button class="btn ghost" onclick="window.print()">🖨️ Imprimir comanda 80mm</button></div>
+  </div>
+</section>
+</main>
+
+<footer><div class="wrap">Menuly demo • 100% pt-BR • dinheiro em centavos • cores via variáveis CSS • <span id="year"></span></div></footer>
+
+<!-- SHEET / DRAWER / MODAL -->
+<div id="sheetOverlay" onclick="closeSheet()"></div>
+<div id="sheet"></div>
+<div id="drawerOverlay" onclick="closeCart()"></div>
+<div id="drawer"></div>
+<div id="modalOverlay" onclick="closeModal()"><div id="modal" onclick="event.stopPropagation()"></div></div>
+<div id="cartbar" onclick="openCart()">Ver sacola • <span id="cartCount">0</span> itens • <span id="cartTotal">R$ 0,00</span></div>
+
+<script src="app.js"></script>
+</body>
+</html>
